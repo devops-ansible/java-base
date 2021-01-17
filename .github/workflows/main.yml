@@ -4,8 +4,6 @@ on:
   repository_dispatch:
   push:
     branches: master
-  schedule:
-    - cron: '11 23 * * 0'
 
 jobs:
   main:
@@ -33,3 +31,13 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+        
+      - name: Trigger Build for Jira
+        run: curl --request POST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" https://api.github.com/repos/devops-ansible/jira/dispatches --data '{"event_type":"build_application"}'
+        
+      - name: Trigger Build for Confluence
+        run: curl --request POST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" https://api.github.com/repos/devops-ansible/confluence/dispatches --data '{"event_type":"build_application"}'
+        
+      - name: Trigger Build for Bitbucket
+        run: curl --request POST -u "${{ secrets.PAT_USERNAME}}:${{secrets.PAT_TOKEN}}" https://api.github.com/repos/devops-ansible/bitbucket/dispatches --data '{"event_type":"build_application"}'
+
